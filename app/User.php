@@ -26,4 +26,21 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    public function conversations()
+    {
+        // TODO: belongsTo(Conversation::class) ??? or belongsToMany?
+        return $this->belongsTo('Conversation')->whereNull('parent_id')->orderBy('last_reply', 'desc');
+    }
+
+    public function isInConversation(Conversation $c)
+    {
+        return $this->conversations->contains($c);
+    }
+
+    public function getAvatar($size = 45)
+    {
+        return "https://www.gravatar.com/avatar/{md5($this->email)}?s={$size}&d=mm";
+    }
+    
 }
