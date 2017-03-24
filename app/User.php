@@ -30,7 +30,7 @@ class User extends Authenticatable
     public function conversations()
     {
         // TODO: belongsTo(Conversation::class) ??? or belongsToMany?
-        return $this->belongsTo('Conversation')->whereNull('parent_id')->orderBy('last_reply', 'desc');
+        return $this->belongsTo('App\Conversation')->whereNull('parent_id')->orderBy('last_reply', 'desc');
     }
 
     public function isInConversation(Conversation $c)
@@ -42,5 +42,5 @@ class User extends Authenticatable
     {
         return "https://www.gravatar.com/avatar/{md5($this->email)}?s={$size}&d=mm";
     }
-    
+
 }

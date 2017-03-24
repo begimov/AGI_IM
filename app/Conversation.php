@@ -27,12 +27,12 @@ class Conversation extends Model
 
     public function replies()
     {
-        return $this->hasMany('Conversation', 'parent_id')->latestFirst();
+        return $this->hasMany('App\Conversation', 'parent_id')->latestFirst();
     }
 
     public function parentConversation()
     {
-        return $this->belongsTo('Conversation', 'parent_id');
+        return $this->belongsTo('App\Conversation', 'parent_id');
     }
 
     public function touchLastReply()
