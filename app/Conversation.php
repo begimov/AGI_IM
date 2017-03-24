@@ -3,36 +3,34 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Auth;
 
 class Conversation extends Model
 {
-    private $dates = ['last_reply'];
+    protected $dates = ['last_reply'];
 
     public function user()
     {
-        return $this->belongsTo('User');
+        return $this->belongsTo(User::class);
     }
 
     public function users()
     {
-        return $this->belongsToMany('User');
+        return $this->belongsToMany(User::class);
     }
 
     public function usersExceptCurrentlyAuthenticated()
     {
-        // TODO: $this->users()? & Auth::user()->id
-        return $this->user()->where('user_id', '!=', Auth::id());
+        return $this->users()->where('user_id', '!=', \Auth::user()->id);
     }
 
     public function replies()
     {
-        return $this->hasMany('App\Conversation', 'parent_id')->latestFirst();
+        return $this->hasMany(Conversation::class, 'parent_id')->latestFirst();
     }
 
     public function parentConversation()
     {
-        return $this->belongsTo('App\Conversation', 'parent_id');
+        return $this->belongsTo(Conversation::class, 'parent_id');
     }
 
     public function touchLastReply()

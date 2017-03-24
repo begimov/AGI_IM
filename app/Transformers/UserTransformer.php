@@ -4,7 +4,7 @@ namespace App\Transformers;
 
 use App\User;
 
-class UserTransformer extends League\Fractal\TransformerAbstract
+class UserTransformer extends \League\Fractal\TransformerAbstract
 {
     public function transform(User $u)
     {

@@ -29,8 +29,7 @@ class User extends Authenticatable
 
     public function conversations()
     {
-        // TODO: belongsTo(Conversation::class) ??? or belongsToMany?
-        return $this->belongsTo('App\Conversation')->whereNull('parent_id')->orderBy('last_reply', 'desc');
+        return $this->belongsToMany(Conversation::class)->whereNull('parent_id')->orderBy('last_reply', 'desc');
     }
 
     public function isInConversation(Conversation $c)
@@ -40,7 +39,7 @@ class User extends Authenticatable
 
     public function getAvatar($size = 45)
     {
-        return "https://www.gravatar.com/avatar/{md5($this->email)}?s={$size}&d=mm";
+        return 'https://www.gravatar.com/avatar/' . md5($this->email) . '?s=' . $size . '&d=mm';
     }
 
 }
