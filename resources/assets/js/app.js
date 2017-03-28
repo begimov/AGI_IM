@@ -13,7 +13,8 @@ require('./bootstrap');
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-Vue.component('example', require('./components/Example.vue'));
+Vue.component('conversations-dashboard', require('./components/ConversationsDashboard.vue'));
+Vue.component('conversations', require('./components/Conversations.vue'));
 
 import store from './store'
 
