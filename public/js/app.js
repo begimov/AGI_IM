@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "./";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 56);
+/******/ 	return __webpack_require__(__webpack_require__.s = 61);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -21441,8 +21441,8 @@ __webpack_require__(36);
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-Vue.component('conversations-dashboard', __webpack_require__(52));
-Vue.component('conversations', __webpack_require__(51));
+Vue.component('conversations-dashboard', __webpack_require__(54));
+Vue.component('conversations', __webpack_require__(53));
 
 
 
@@ -22304,7 +22304,9 @@ module.exports = function spread(callback) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__helpers_trunc__ = __webpack_require__(69);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__helpers_trunc___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__helpers_trunc__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vuex__ = __webpack_require__(3);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 //
@@ -22334,14 +22336,19 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
+//
+
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    methods: _extends({}, __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])(['getConversations'])),
+    methods: _extends({}, __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1_vuex__["b" /* mapActions */])(['getConversations']), {
+        trunc: __WEBPACK_IMPORTED_MODULE_0__helpers_trunc___default.a
+    }),
     mounted() {
         this.getConversations(1);
     },
-    computed: _extends({}, __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])(['allConversations']))
+    computed: _extends({}, __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1_vuex__["c" /* mapGetters */])(['allConversations', 'getLoadingConversations']))
 });
 
 /***/ }),
@@ -22376,7 +22383,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(3);
 
-window._ = __webpack_require__(50);
+window._ = __webpack_require__(52);
 
 /**
  * We'll load jQuery and the Bootstrap jQuery plugin which provides support
@@ -22475,8 +22482,11 @@ __WEBPACK_IMPORTED_MODULE_1_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_2_vuex
 
 /* harmony default export */ __webpack_exports__["a"] = ({
   getConversations({ dispatch, commit }, page) {
+    commit('setLoadingConversations', true);
+
     __WEBPACK_IMPORTED_MODULE_0__api__["a" /* default */].conversations.getConversations(1).then(res => {
       commit('setConversations', res.data.data);
+      commit('setLoadingConversations', false);
     });
   }
 });
@@ -22544,6 +22554,9 @@ __WEBPACK_IMPORTED_MODULE_1_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_2_vuex
 /* harmony default export */ __webpack_exports__["a"] = ({
   allConversations(state) {
     return state.conversations;
+  },
+  getLoadingConversations(state) {
+    return state.loadingConversations;
   }
 });
 
@@ -22581,6 +22594,9 @@ __WEBPACK_IMPORTED_MODULE_1_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_2_vuex
 /* harmony default export */ __webpack_exports__["a"] = ({
   setConversations(state, conversations) {
     state.conversations = conversations;
+  },
+  setLoadingConversations(state, value) {
+    state.loadingConversations = value;
   }
 });
 
@@ -24979,7 +24995,9 @@ if (typeof jQuery === 'undefined') {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(10)))
 
 /***/ }),
-/* 50 */
+/* 50 */,
+/* 51 */,
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, module) {var __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -42068,17 +42086,17 @@ if (typeof jQuery === 'undefined') {
   }
 }.call(this));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13), __webpack_require__(55)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13), __webpack_require__(60)(module)))
 
 /***/ }),
-/* 51 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Component = __webpack_require__(11)(
   /* script */
   __webpack_require__(34),
   /* template */
-  __webpack_require__(54),
+  __webpack_require__(56),
   /* scopeId */
   null,
   /* cssModules */
@@ -42105,14 +42123,14 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 52 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Component = __webpack_require__(11)(
   /* script */
   __webpack_require__(35),
   /* template */
-  __webpack_require__(53),
+  __webpack_require__(55),
   /* scopeId */
   null,
   /* cssModules */
@@ -42139,7 +42157,7 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 53 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -42162,7 +42180,7 @@ if (false) {
 }
 
 /***/ }),
-/* 54 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -42172,7 +42190,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "panel-heading"
   }, [_vm._v("\n        Chats:\n    ")]), _vm._v(" "), _c('div', {
     staticClass: "panel-body"
-  }, _vm._l((_vm.allConversations), function(item) {
+  }, [(_vm.getLoadingConversations) ? _c('div', {
+    staticClass: "loader"
+  }) : (_vm.allConversations.length) ? _vm._l((_vm.allConversations), function(item) {
     return _c('div', {
       staticClass: "media"
     }, [_c('div', {
@@ -42195,7 +42215,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       }
     }, [_c('h4', {
       staticClass: "media-heading"
-    }, [_vm._v(_vm._s(item.user.data.name))]), _vm._v(" " + _vm._s(item.body) + "\n                ")]), _vm._v(" "), _c('p', {
+    }, [_vm._v(_vm._s(item.user.data.name))]), _vm._v(" " + _vm._s(_vm.trunc(item.body, 40)) + "\n                ")]), _vm._v(" "), _c('p', {
       staticClass: "text-muted"
     }, [_vm._v(_vm._s(item.participant_count + 1) + " users")]), _vm._v(" "), _c('ul', {
       staticClass: "list-inline"
@@ -42207,7 +42227,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         }
       })
     })), _vm._v(" "), _c('li', [_vm._v(_vm._s(item.last_reply_human))])])])])
-  }))])
+  }) : _c('div', [_vm._v("No chats")])], 2)])
 },staticRenderFns: []}
 module.exports.render._withStripped = true
 if (false) {
@@ -42218,7 +42238,10 @@ if (false) {
 }
 
 /***/ }),
-/* 55 */
+/* 57 */,
+/* 58 */,
+/* 59 */,
+/* 60 */
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -42246,12 +42269,27 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 56 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(14);
 module.exports = __webpack_require__(15);
 
+
+/***/ }),
+/* 62 */,
+/* 63 */,
+/* 64 */,
+/* 65 */,
+/* 66 */,
+/* 67 */,
+/* 68 */,
+/* 69 */
+/***/ (function(module, exports) {
+
+module.exports = function (str, limit) {
+  return str.length > limit ? str.slice(0, limit) + '...' : str;
+};
 
 /***/ })
 /******/ ]);
