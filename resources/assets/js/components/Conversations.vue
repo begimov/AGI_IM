@@ -7,12 +7,12 @@
         <div class="loader" v-if="getLoadingConversations"></div>
         <div class="media" v-for="item in allConversations" v-else-if="allConversations.length">
             <div class="media-left">
-                <a href="#">
+                <a href="#" v-on:click.prevent="getConversation(item.id)">
                     <img class="media-object" v-bind:src="item.user.data.avatar" alt="">
                 </a>
             </div>
             <div class="media-body">
-                <a href="">
+                <a href="#" v-on:click.prevent="getConversation(item.id)">
                     <h4 class="media-heading">{{ item.user.data.name }}</h4> {{ trunc(item.body, 40) }}
                 </a>
                 <p class="text-muted">{{ item.participant_count + 1 }} users</p>
@@ -36,7 +36,8 @@ import {
 export default {
     methods: {
         ...mapActions([
-            'getConversations'
+            'getConversations',
+            'getConversation'
         ]),
         trunc
     },

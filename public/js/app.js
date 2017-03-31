@@ -667,8 +667,8 @@ process.umask = function() { return 0; };
 /* unused harmony export Store */
 /* unused harmony export mapState */
 /* unused harmony export mapMutations */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return mapGetters; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return mapActions; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return mapGetters; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return mapActions; });
 /**
  * vuex v2.2.1
  * (c) 2017 Evan You
@@ -1745,10 +1745,13 @@ module.exports = function bind(fn, thisArg) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__conversations__ = __webpack_require__(38);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__conversation__ = __webpack_require__(66);
+
 
 
 /* harmony default export */ __webpack_exports__["a"] = ({
-  conversations: __WEBPACK_IMPORTED_MODULE_0__conversations__["a" /* default */]
+  conversations: __WEBPACK_IMPORTED_MODULE_0__conversations__["a" /* default */],
+  conversation: __WEBPACK_IMPORTED_MODULE_1__conversation__["a" /* default */]
 });
 
 /***/ }),
@@ -21443,6 +21446,7 @@ __webpack_require__(36);
 
 Vue.component('conversations-dashboard', __webpack_require__(53));
 Vue.component('conversations', __webpack_require__(52));
+Vue.component('conversation', __webpack_require__(68));
 
 
 
@@ -22342,13 +22346,13 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    methods: _extends({}, __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1_vuex__["b" /* mapActions */])(['getConversations']), {
+    methods: _extends({}, __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1_vuex__["c" /* mapActions */])(['getConversations', 'getConversation']), {
         trunc: __WEBPACK_IMPORTED_MODULE_0__helpers_trunc___default.a
     }),
     mounted() {
         this.getConversations(1);
     },
-    computed: _extends({}, __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1_vuex__["c" /* mapGetters */])(['allConversations', 'getLoadingConversations']))
+    computed: _extends({}, __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1_vuex__["b" /* mapGetters */])(['allConversations', 'getLoadingConversations']))
 });
 
 /***/ }),
@@ -22507,14 +22511,30 @@ __WEBPACK_IMPORTED_MODULE_1_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_2_vuex
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__api__ = __webpack_require__(9);
 
 
-/* harmony default export */ __webpack_exports__["a"] = ({});
+/* harmony default export */ __webpack_exports__["a"] = ({
+    getConversation({ dispatch, commit }, id) {
+        commit('setLoadingConversation', true);
+
+        __WEBPACK_IMPORTED_MODULE_0__api__["a" /* default */].conversation.getConversation(id).then(res => {
+            commit('setConversation', res.data.data);
+            commit('setLoadingConversation', false);
+        });
+    }
+});
 
 /***/ }),
 /* 42 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony default export */ __webpack_exports__["a"] = ({});
+/* harmony default export */ __webpack_exports__["a"] = ({
+    conversation(state) {
+        return state.conversation;
+    },
+    getLoadingConversation(state) {
+        return state.loadingConversation;
+    }
+});
 
 /***/ }),
 /* 43 */
@@ -22542,7 +22562,14 @@ __WEBPACK_IMPORTED_MODULE_1_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_2_vuex
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony default export */ __webpack_exports__["a"] = ({});
+/* harmony default export */ __webpack_exports__["a"] = ({
+  setConversation(state, conversation) {
+    state.conversation = conversation;
+  },
+  setLoadingConversation(state, value) {
+    state.loadingConversation = value;
+  }
+});
 
 /***/ }),
 /* 45 */
@@ -42175,7 +42202,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "col-sm-5"
   }, [_c('conversations')], 1), _vm._v(" "), _c('div', {
     staticClass: "col-sm-7"
-  }, [_vm._v("\n          CONVERSATION\n        ")])])])
+  }, [_c('conversation')], 1)])])
 },staticRenderFns: []}
 module.exports.render._withStripped = true
 if (false) {
@@ -42206,6 +42233,12 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }, [_c('a', {
       attrs: {
         "href": "#"
+      },
+      on: {
+        "click": function($event) {
+          $event.preventDefault();
+          _vm.getConversation(item.id)
+        }
       }
     }, [_c('img', {
       staticClass: "media-object",
@@ -42217,7 +42250,13 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       staticClass: "media-body"
     }, [_c('a', {
       attrs: {
-        "href": ""
+        "href": "#"
+      },
+      on: {
+        "click": function($event) {
+          $event.preventDefault();
+          _vm.getConversation(item.id)
+        }
       }
     }, [_c('h4', {
       staticClass: "media-heading"
@@ -42278,6 +42317,180 @@ module.exports = function(module) {
 __webpack_require__(14);
 module.exports = __webpack_require__(15);
 
+
+/***/ }),
+/* 58 */,
+/* 59 */,
+/* 60 */,
+/* 61 */,
+/* 62 */,
+/* 63 */,
+/* 64 */,
+/* 65 */,
+/* 66 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony default export */ __webpack_exports__["a"] = ({
+  getConversation(id) {
+    return new Promise((resolve, reject) => {
+      axios.get(`webapi/conversations/${id}`).then(res => {
+        resolve(res);
+      });
+    });
+  }
+});
+
+/***/ }),
+/* 67 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(3);
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    computed: _extends({}, __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapGetters */])(['conversation', 'getLoadingConversation']))
+});
+
+/***/ }),
+/* 68 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Component = __webpack_require__(11)(
+  /* script */
+  __webpack_require__(67),
+  /* template */
+  __webpack_require__(69),
+  /* scopeId */
+  null,
+  /* cssModules */
+  null
+)
+Component.options.__file = "/Users/max/Desktop/AGI_IM/resources/assets/js/components/Conversation.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] Conversation.vue: functional components are not supported with templates, they should use render functions.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-2b0264d7", Component.options)
+  } else {
+    hotAPI.reload("data-v-2b0264d7", Component.options)
+  }
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 69 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "panel panel-default"
+  }, [_c('div', {
+    staticClass: "panel-body"
+  }, [(_vm.getLoadingConversation) ? _c('div', {
+    staticClass: "loader"
+  }) : (_vm.conversation) ? _c('div', [(_vm.conversation.users.data.length) ? _c('ul', {
+    staticClass: "list-inline"
+  }, [_c('li', [_vm._v("In chat:")]), _vm._v(" "), _vm._l((_vm.conversation.users.data), function(user) {
+    return _c('li', [_vm._v(_vm._s(user.name))])
+  })], 2) : _vm._e(), _vm._v(" "), _vm._l((_vm.conversation.replies.data), function(item) {
+    return _c('div', {
+      staticClass: "media"
+    }, [_c('div', {
+      staticClass: "media-left"
+    }, [_c('img', {
+      staticClass: "media-object",
+      attrs: {
+        "src": item.user.data.avatar,
+        "alt": ""
+      }
+    })]), _vm._v(" "), _c('div', {
+      staticClass: "media-body"
+    }, [_c('h5', [_vm._v(_vm._s(item.user.data.name) + " - " + _vm._s(item.created_at_human))]), _vm._v(" "), _c('div', {
+      staticClass: "panel panel-default"
+    }, [_c('div', {
+      staticClass: "panel-body"
+    }, [_vm._v("\n                            " + _vm._s(item.body) + "\n                        ")])])])])
+  }), _vm._v(" "), _c('div', {
+    staticClass: "media"
+  }, [_c('div', {
+    staticClass: "media-left"
+  }, [_c('img', {
+    staticClass: "media-object",
+    attrs: {
+      "src": _vm.conversation.user.data.avatar,
+      "alt": ""
+    }
+  })]), _vm._v(" "), _c('div', {
+    staticClass: "media-body"
+  }, [_c('h5', [_vm._v(_vm._s(_vm.conversation.user.data.name) + " - " + _vm._s(_vm.conversation.created_at_human))]), _vm._v(" "), _c('div', {
+    staticClass: "panel panel-default"
+  }, [_c('div', {
+    staticClass: "panel-body"
+  }, [_vm._v("\n                            " + _vm._s(_vm.conversation.body) + "\n                        ")])])])])], 2) : _c('div', [_vm._v("No chat selected...")])])])
+},staticRenderFns: []}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-2b0264d7", module.exports)
+  }
+}
 
 /***/ })
 /******/ ]);

@@ -15,6 +15,7 @@ require('./bootstrap');
 
 Vue.component('conversations-dashboard', require('./components/ConversationsDashboard.vue'));
 Vue.component('conversations', require('./components/Conversations.vue'));
+Vue.component('conversation', require('./components/Conversation.vue'));
 
 import store from './store'
 

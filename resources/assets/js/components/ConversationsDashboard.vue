@@ -5,7 +5,7 @@
               <conversations></conversations>
             </div>
             <div class="col-sm-7">
-              CONVERSATION
+              <conversation></conversation>
             </div>
         </div>
     </div>
@@ -14,7 +14,7 @@
 <script>
     export default {
         mounted() {
-            
+
         }
     }
 </script>
