@@ -5,7 +5,7 @@
               <conversations></conversations>
             </div>
             <div class="col-sm-7">
-              <conversation></conversation>
+              <conversation :id="id"></conversation>
             </div>
         </div>
     </div>
@@ -13,6 +13,11 @@
 
 <script>
     export default {
+        props: {
+          'id': {
+            default: null
+          }
+        },
         mounted() {
 
         }

@@ -52,6 +52,17 @@ export default {
             'conversation',
             'getLoadingConversation'
         ])
+    },
+    methods: {
+        ...mapActions([
+            'getConversation'
+        ])
+    },
+    props: ['id'],
+    mounted() {
+        if (this.id !== null) {
+            this.getConversation(this.id)
+        }
     }
 }
 </script>
