@@ -14,4 +14,9 @@ class ConversationPolicy
     {
       return $user->isInConversation($conversation);
     }
+
+    public function reply(User $user, Conversation $conversation)
+    {
+      return $user->isInConversation($conversation);
+    }
 }
