@@ -5,5 +5,14 @@ export default {
         resolve(res)
       })
     })
+  },
+  storeReply(id, {body}) {
+    return new Promise((resolve, reject) => {
+      axios.post(`/webapi/conversations/${id}/reply`, {
+        body: body
+      }).then(res => {
+        resolve(res)
+      })
+    })
   }
 }

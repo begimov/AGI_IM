@@ -31,7 +31,7 @@ class ConversationReplyController extends Controller
 
         return fractal()
             ->item($reply)
-            ->parseIncludes(['user'])
+            ->parseIncludes(['user', 'parent', 'parent.user', 'parent.users'])
             ->transformWith(new ConversationTransformer)
             ->toArray();
     }

@@ -7,6 +7,7 @@
                 <li>In chat:</li>
                 <li v-for="user in conversation.users.data">{{ user.name }}</li>
             </ul>
+            <conversation-reply-form></conversation-reply-form>
             <!-- replies -->
             <div class="media" v-for="item in conversation.replies.data">
                 <div class="media-left">

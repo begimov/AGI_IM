@@ -9,5 +9,11 @@ export default {
           commit('setLoadingConversation', false)
           window.history.pushState(null, null, `/conversations/${id}`)
         })
+    },
+    createReply ({dispatch, commit}, {id, body}) {
+        return api.conversation.storeReply(id, {body}).then(res => {
+          commit('addReply', res.data.data)
+          commit('updateConversations', res.data.data.parent.data)
+        })
     }
 }

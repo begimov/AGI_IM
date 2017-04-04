@@ -380,8 +380,8 @@ module.exports = {
 /* unused harmony export Store */
 /* unused harmony export mapState */
 /* unused harmony export mapMutations */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return mapGetters; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return mapActions; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return mapGetters; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return mapActions; });
 /**
  * vuex v2.2.1
  * (c) 2017 Evan You
@@ -21447,6 +21447,7 @@ __webpack_require__(37);
 Vue.component('conversations-dashboard', __webpack_require__(56));
 Vue.component('conversations', __webpack_require__(55));
 Vue.component('conversation', __webpack_require__(54));
+Vue.component('conversation-reply-form', __webpack_require__(71));
 
 
 
@@ -22354,11 +22355,12 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    computed: _extends({}, __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapGetters */])(['conversation', 'getLoadingConversation'])),
-    methods: _extends({}, __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapActions */])(['getConversation'])),
+    computed: _extends({}, __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])(['conversation', 'getLoadingConversation'])),
+    methods: _extends({}, __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])(['getConversation'])),
     props: ['id'],
     mounted() {
         if (this.id !== null) {
@@ -22411,13 +22413,13 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    methods: _extends({}, __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1_vuex__["c" /* mapActions */])(['getConversations', 'getConversation']), {
+    methods: _extends({}, __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1_vuex__["b" /* mapActions */])(['getConversations', 'getConversation']), {
         trunc: __WEBPACK_IMPORTED_MODULE_0__helpers_trunc___default.a
     }),
     mounted() {
         this.getConversations(1);
     },
-    computed: _extends({}, __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1_vuex__["b" /* mapGetters */])(['allConversations', 'getLoadingConversations']))
+    computed: _extends({}, __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1_vuex__["c" /* mapGetters */])(['allConversations', 'getLoadingConversations']))
 });
 
 /***/ }),
@@ -22530,6 +22532,15 @@ module.exports = function (str, limit) {
         resolve(res);
       });
     });
+  },
+  storeReply(id, { body }) {
+    return new Promise((resolve, reject) => {
+      axios.post(`/webapi/conversations/${id}/reply`, {
+        body: body
+      }).then(res => {
+        resolve(res);
+      });
+    });
   }
 });
 
@@ -22605,6 +22616,12 @@ __WEBPACK_IMPORTED_MODULE_1_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_2_vuex
             commit('setLoadingConversation', false);
             window.history.pushState(null, null, `/conversations/${id}`);
         });
+    },
+    createReply({ dispatch, commit }, { id, body }) {
+        return __WEBPACK_IMPORTED_MODULE_0__api__["a" /* default */].conversation.storeReply(id, { body }).then(res => {
+            commit('addReply', res.data.data);
+            commit('updateConversations', res.data.data.parent.data);
+        });
     }
 });
 
@@ -22654,6 +22671,9 @@ __WEBPACK_IMPORTED_MODULE_1_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_2_vuex
   },
   setLoadingConversation(state, value) {
     state.loadingConversation = value;
+  },
+  addReply(state, reply) {
+    state.conversation.replies.data = [reply, ...state.conversation.replies.data];
   }
 });
 
@@ -22718,6 +22738,10 @@ __WEBPACK_IMPORTED_MODULE_1_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_2_vuex
   },
   setLoadingConversations(state, value) {
     state.loadingConversations = value;
+  },
+  updateConversations(state, conversation) {
+    state.conversations = state.conversations.filter(item => item.id !== conversation.id);
+    state.conversations = [conversation, ...state.conversations];
   }
 });
 
@@ -42324,7 +42348,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "list-inline"
   }, [_c('li', [_vm._v("In chat:")]), _vm._v(" "), _vm._l((_vm.conversation.users.data), function(user) {
     return _c('li', [_vm._v(_vm._s(user.name))])
-  })], 2) : _vm._e(), _vm._v(" "), _vm._l((_vm.conversation.replies.data), function(item) {
+  })], 2) : _vm._e(), _vm._v(" "), _c('conversation-reply-form'), _vm._v(" "), _vm._l((_vm.conversation.replies.data), function(item) {
     return _c('div', {
       staticClass: "media"
     }, [_c('div', {
@@ -42500,6 +42524,147 @@ module.exports = function(module) {
 __webpack_require__(14);
 module.exports = __webpack_require__(15);
 
+
+/***/ }),
+/* 62 */,
+/* 63 */,
+/* 64 */,
+/* 65 */,
+/* 66 */,
+/* 67 */,
+/* 68 */,
+/* 69 */,
+/* 70 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(1);
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    data() {
+        return {
+            body: null
+        };
+    },
+    methods: _extends({}, __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])(['createReply']), {
+        submitReply() {
+            this.createReply({
+                id: this.conversation.id,
+                body: this.body
+            }).then(res => {
+                this.body = null;
+            });
+        }
+    }),
+    computed: _extends({}, __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])(['conversation']))
+});
+
+/***/ }),
+/* 71 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Component = __webpack_require__(4)(
+  /* script */
+  __webpack_require__(70),
+  /* template */
+  __webpack_require__(72),
+  /* scopeId */
+  null,
+  /* cssModules */
+  null
+)
+Component.options.__file = "/Users/max/Desktop/AGI_IM/resources/assets/js/components/forms/ConversationReplyForm.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] ConversationReplyForm.vue: functional components are not supported with templates, they should use render functions.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-3a3f73f2", Component.options)
+  } else {
+    hotAPI.reload("data-v-3a3f73f2", Component.options)
+  }
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 72 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('form', {
+    attrs: {
+      "action": "#"
+    },
+    on: {
+      "submit": function($event) {
+        $event.preventDefault();
+        _vm.submitReply($event)
+      }
+    }
+  }, [_c('div', {
+    staticClass: "form-group"
+  }, [_c('textarea', {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.body),
+      expression: "body"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      "rows": "4",
+      "cols": "30",
+      "placeholder": "Enter reply..."
+    },
+    domProps: {
+      "value": (_vm.body)
+    },
+    on: {
+      "input": function($event) {
+        if ($event.target.composing) { return; }
+        _vm.body = $event.target.value
+      }
+    }
+  })]), _vm._v(" "), _vm._m(0)])
+},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "form-group"
+  }, [_c('button', {
+    staticClass: "btn btn-default",
+    attrs: {
+      "type": "submit"
+    }
+  }, [_vm._v("Reply")])])
+}]}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-3a3f73f2", module.exports)
+  }
+}
 
 /***/ })
 /******/ ]);
