@@ -30172,6 +30172,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__helpers_autocomplete__ = __webpack_require__(85);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vuex__ = __webpack_require__(13);
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 //
 //
 //
@@ -30185,14 +30188,59 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  mounted() {
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__helpers_autocomplete__["a" /* userAutocomplete */])('#users', {
-      hitsPerPage: 5
-    });
-  }
+    data() {
+        return {
+            body: null,
+            recipients: []
+        };
+    },
+    methods: _extends({}, __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1_vuex__["b" /* mapActions */])(['createConversation']), {
+        addRecipient(user) {
+            this.filterRecipientOut(user.id);
+            this.recipients.push(user);
+        },
+        removeRecipient(id) {
+            this.filterRecipientOut(id);
+        },
+        filterRecipientOut(recepientId) {
+            this.recipients = this.recipients.filter(elem => elem.id !== recepientId);
+        },
+        send() {
+            this.createConversation({
+                body: this.body,
+                recipientIds: this.recipients.map(elem => elem.id)
+            }).then(() => {
+                this.recipients = [];
+                this.body = null;
+            });
+        }
+    }),
+    mounted() {
+        let users = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__helpers_autocomplete__["a" /* userAutocomplete */])('#users', {
+            hitsPerPage: 5
+        }).on('autocomplete:selected', (event, suggestion, dataset) => {
+            this.addRecipient(suggestion);
+            users.autocomplete.setVal('');
+        });
+    }
 });
 
 /***/ }),
@@ -30343,22 +30391,27 @@ module.exports = function (str, limit) {
 
 "use strict";
 /* harmony default export */ __webpack_exports__["a"] = ({
-  getConversation(id) {
-    return new Promise((resolve, reject) => {
-      axios.get(`/webapi/conversations/${id}`).then(res => {
-        resolve(res);
-      });
-    });
-  },
-  storeReply(id, { body }) {
-    return new Promise((resolve, reject) => {
-      axios.post(`/webapi/conversations/${id}/reply`, {
-        body: body
-      }).then(res => {
-        resolve(res);
-      });
-    });
-  }
+    getConversation(id) {
+        return new Promise((resolve, reject) => {
+            axios.get(`/webapi/conversations/${id}`).then(res => {
+                resolve(res);
+            });
+        });
+    },
+    storeReply(id, { body }) {
+        return new Promise((resolve, reject) => {
+            axios.post(`/webapi/conversations/${id}/reply`, { body: body }).then(res => {
+                resolve(res);
+            });
+        });
+    },
+    storeConversation({ body, recipientIds }) {
+        return new Promise((resolve, reject) => {
+            axios.post('/webapi/conversations', { body, recipients: recipientIds }).then(res => {
+                resolve(res);
+            });
+        });
+    }
 });
 
 /***/ }),
@@ -30438,6 +30491,12 @@ __WEBPACK_IMPORTED_MODULE_1_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_2_vuex
         return __WEBPACK_IMPORTED_MODULE_0__api__["a" /* default */].conversation.storeReply(id, { body }).then(res => {
             commit('addReply', res.data.data);
             commit('updateConversations', res.data.data.parent.data);
+        });
+    },
+    createConversation({ dispatch, commit }, { body, recipientIds }) {
+        return __WEBPACK_IMPORTED_MODULE_0__api__["a" /* default */].conversation.storeConversation({ body, recipientIds }).then(res => {
+            // TODO: update UI
+            console.log(res);
         });
     }
 });
@@ -52353,15 +52412,66 @@ module.exports = Component.exports
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _vm._m(0)
-},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', {
     staticClass: "panel panel-default"
   }, [_c('div', {
     staticClass: "panel-heading"
   }, [_vm._v("\n        New message:\n    ")]), _vm._v(" "), _c('div', {
     staticClass: "panel-body"
-  }, [_c('div', {
+  }, [_c('form', {
+    staticClass: "form-group",
+    attrs: {
+      "action": "#"
+    },
+    on: {
+      "submit": function($event) {
+        $event.preventDefault();
+        _vm.send($event)
+      }
+    }
+  }, [(_vm.recipients.length) ? _c('ul', {
+    staticClass: "list-inline"
+  }, [_c('li', [_vm._v("To:")]), _vm._v(" "), _vm._l((_vm.recipients), function(item) {
+    return _c('li', [_c('a', {
+      attrs: {
+        "href": "#"
+      },
+      on: {
+        "click": function($event) {
+          $event.stopPropagation();
+          $event.preventDefault();
+          _vm.removeRecipient(item.id)
+        }
+      }
+    }, [_vm._v(_vm._s(item.name))])])
+  })], 2) : _vm._e(), _vm._v(" "), _vm._m(0), _vm._v(" "), _c('div', {
+    staticClass: "form-group"
+  }, [_c('textarea', {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.body),
+      expression: "body"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      "id": "message",
+      "rows": "4",
+      "cols": "30",
+      "placeholder": "Enter message..."
+    },
+    domProps: {
+      "value": (_vm.body)
+    },
+    on: {
+      "input": function($event) {
+        if ($event.target.composing) { return; }
+        _vm.body = $event.target.value
+      }
+    }
+  })]), _vm._v(" "), _vm._m(1)])])])
+},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
     staticClass: "form-group"
   }, [_c('input', {
     staticClass: "form-control",
@@ -52370,7 +52480,16 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "id": "users",
       "placeholder": "Add users..."
     }
-  })])])])
+  })])
+},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "form-group"
+  }, [_c('button', {
+    staticClass: "btn btn-default",
+    attrs: {
+      "type": "submit"
+    }
+  }, [_vm._v("Send")])])
 }]}
 module.exports.render._withStripped = true
 if (false) {

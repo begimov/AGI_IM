@@ -15,5 +15,11 @@ export default {
           commit('addReply', res.data.data)
           commit('updateConversations', res.data.data.parent.data)
         })
+    },
+    createConversation({dispatch, commit}, {body, recipientIds}) {
+        return api.conversation.storeConversation({body, recipientIds}).then(res => {
+          // TODO: update UI
+          console.log(res)
+      })
     }
 }
